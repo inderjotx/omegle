@@ -1,12 +1,12 @@
 "use client"
 
-import { ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
+import { MutableRefObject, ReactNode, createContext, useContext, useEffect, useRef, useState } from 'react'
 import { socket } from '@/lib/socket'
 import { PeerService } from '@/lib/SocketService'
 
 
 // fucnation to call join , that will join use to the Room
-const SocketContext = createContext<null | { roomId: string, makeCall: () => void }>(null)
+const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null> }>(null)
 
 
 export function useSocket() {
@@ -175,16 +175,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
 
         if (window) {
-
             peerRef.current = new PeerService()
-
-
-
         }
 
-    })
+    }, [])
 
-    return <SocketContext.Provider value={{ roomId, makeCall }} >
+    return <SocketContext.Provider value={{ roomId, makeCall, peerRef }} >
         {children}
     </SocketContext.Provider>
 

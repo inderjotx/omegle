@@ -7,7 +7,7 @@ import ReactPlayer from "react-player";
 
 export default function Home() {
 
-  const { roomId, makeCall } = useSocket()
+  const { roomId, makeCall, peerRef } = useSocket()
   const [localStream, setLocalStream] = useState<"" | MediaStream>("")
   const [remoteSteam, setRemoteStream] = useState<"" | MediaStream>("")
 
@@ -20,11 +20,25 @@ export default function Home() {
     async function init() {
       const media = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
       setLocalStream(media)
+
+      media.getTracks().forEach((track) => {
+        peerRef.current?.peer?.addTrack(track, media)
+      })
+
+
+      peerRef.current?.peer?.addEventListener("track", (e) => {
+        //  const [ track ] =  e.streams
+        console.log("Received Media stream from the remote")
+        setRemoteStream(e.streams[0])
+
+      })
+
+
     }
 
     init()
 
-  }, [])
+  }, [peerRef])
 
   return (
     <div className="flex flex-col h-screen w-full" >
