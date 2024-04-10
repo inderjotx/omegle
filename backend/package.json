@@ -4,11 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "npx nodemon",
-    "start": "node ./build/index.js",
-    "build": "echo 'noting to do : cool'"
+    "start": "nodemon src/index.ts",
+    "build": "rimraf dist && tsc &&  prisma generate",
+    "postinstall": "prisma generate",
+    "ts.check": "tsc --project tsconfig.json",
+    "add-build": "git add dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+    "pre-commit": [
+    "ts.check",
+    "build",
+    "add-build"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
