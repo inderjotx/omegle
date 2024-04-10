@@ -23,7 +23,6 @@ export class SocketService {
 
         socket.on("disconnect", () => {
 
-
             console.log("Removed Room", socket.id)
             this.roomManager.remoteFromRoom(socket)
         })
@@ -59,30 +58,25 @@ export class SocketService {
 
 
 
+        socket.on("message", (data: { roomId: string, message: string }) => {
+
+            console.log('Receiving message')
+            console.log(data.roomId)
+            console.log(data.message)
+
+            // message 
+            this.roomManager.sendMessage(data.roomId, data.message, socket)
+
+        })
 
 
 
-        // yet to do negociation
+
+
+
+
+
+
     }
 
 }
-
-
-// socket.on("nego:start", (data: { roomId: string, sdp: any }) => {
-
-//     console.log("Negociation Start", socket.id)
-//     console.log(data.roomId)
-//     console.log(data.sdp)
-//     this.roomManager.sendOffer(data.roomId, data.sdp, socket)
-//     // make offer
-// })
-
-
-// socket.on("nego:end", (data: { roomId: string, sdp: any }) => {
-
-//     console.log("Negociation end", socket.id)
-//     console.log(data.roomId)
-//     console.log(data.sdp)
-//     this.roomManager.sendAnswer(data.roomId, data.sdp, socket)
-//     // sending answer
-// })

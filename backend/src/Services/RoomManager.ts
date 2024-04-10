@@ -116,7 +116,7 @@ export class RoomManager {
     addCandidate(roomId: string, candidate: any, socket: Socket) {
 
         // send anser to the sender
-        console.log('')
+        console.log('Sending candiadate information')
         const room = this.rooms.get(roomId)
         if (!room) {
             console.log("Invalid Room ID")
@@ -126,6 +126,27 @@ export class RoomManager {
         const receiver = (room.first == socket) ? room.second : room.first
         receiver.emit("candidate", { candidate, roomId })
         console.log("Candiate sent to ", receiver.id)
+    }
+
+
+    sendMessage(roomId: string, message: string, socket: Socket) {
+
+        console.log(roomId)
+        console.log(message)
+        console.log(socket.id)
+
+        const room = this.rooms.get(roomId)
+
+        if (!room) {
+            console.log('Invalid Room Id')
+            return
+        }
+
+        const receiver = (room.first === socket) ? room.second : room.first
+
+        receiver.emit("message", { message })
+        console.log("Sending Message to ", receiver.id)
+
     }
 
 }
