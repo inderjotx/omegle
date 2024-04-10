@@ -35,5 +35,15 @@ io.on("connection", (socket) => {
 
 	socketService.initListners(socket)
 
+	socket.on("code", (data: { roomId: string, code: string }) => {
+
+		console.log('Receiving code ')
+		console.log(data.roomId)
+		console.log(data.code)
+
+
+		io.emit("code-frontend", { code: data.code })
+
+	})
 })
 

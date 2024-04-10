@@ -9,7 +9,7 @@ import ReactPlayer from "react-player";
 
 export default function Home() {
 
-  const { roomId, makeCall, peerRef, message, sendMessage } = useSocket()
+  const { roomId, makeCall, peerRef } = useSocket()
   const [localStream, setLocalStream] = useState<"" | MediaStream>("")
   const [remoteSteam, setRemoteStream] = useState<"" | MediaStream>("")
 
@@ -43,36 +43,25 @@ export default function Home() {
   }, [peerRef])
 
 
-  useEffect(() => {
-
-    if (msgContainerRef.current) {
-      msgContainerRef.current.scrollTop = msgContainerRef.current.scrollHeight
-    }
-
-
-  }, [message])
-
-
-
 
   return (
-    <div className="flex flex-col py-4 gap-4 bg-gray-300 md:flex-row px-4 h-[100vh] w-full " >
+    <div className="flex flex-col justify-center   bg-gray-300 px-4 h-[100vh] w-full " >
 
       {/* videos */}
-      <div>
-        <Button onClick={makeCall} >Call</Button>
+      <div className="mx-auto">
+        <Button onClick={makeCall} className="rounded-full" >Call</Button>
       </div>
 
 
-      <div className="w-full h-96 justify-around gap-2 md:w-1/2 md:h-full flex flex-row md:flex-col" >
-        <div className="text-center relative h-full w-1/2 md:h-1/2 md:w-full " >
+      <div className="w-full  h-96 justify-around gap-2 flex flex-row " >
+        <div className="text-center relative h-full w-1/2 " >
           {
             localStream &&
             <ReactPlayer style={{ position: "absolute", inset: "0" }} url={localStream} width={'100%'} height={'100%'} muted playing />
           }
         </div>
 
-        <div className="text-center  relative h-full w-1/2 md:h-1/2 md:w-full rounded-md " >
+        <div className="text-center  relative h-full w-1/2  rounded-md " >
           {
             remoteSteam ?
               <ReactPlayer style={{ position: "absolute", inset: "0" }} url={remoteSteam} width={'100%'} height={'100%'} muted playing />
@@ -85,7 +74,7 @@ export default function Home() {
       </div>
 
       {/* chat */}
-      <div ref={msgContainerRef} className="h-full  relative overflow-y-scroll w-full bg-gray-200 rounded-md" >
+      {/* <div ref={msgContainerRef} className="h-full  relative overflow-y-scroll w-full bg-gray-200 rounded-md" >
         {
           message.map((message, key) => (
             <div key={key} className={cn("w-full flex p-3", message.sender == "you" ? "justify-start" : "justify-end")}>
@@ -107,7 +96,7 @@ export default function Home() {
           <Button type="submit" >Send</Button>
         </form>
 
-      </div>
+      </div> */}
     </div >
   );
 }

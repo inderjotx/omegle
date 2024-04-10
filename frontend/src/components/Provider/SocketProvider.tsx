@@ -6,7 +6,7 @@ import { PeerService } from '@/lib/SocketService'
 
 
 // fucnation to call join , that will join use to the Room
-const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null>, sendMessage: (msg: string) => void, message: { message: string, sender: "you" | "remote" }[] }>(null)
+const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null> }>(null)
 
 
 export function useSocket() {
@@ -24,7 +24,6 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     const [roomId, setRoomId] = useState("")
     const peerRef = useRef<null | PeerService>(null)
 
-    const [message, setMessage] = useState<{ message: string, sender: "you" | "remote" }[]>([])
 
     const makeCall = () => {
         console.log("Making call")
@@ -108,11 +107,15 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
 
-    const sendMessage = useCallback((message: string) => {
-        console.log("Sending Message")
-        setMessage((prev) => [...prev, { message: message, sender: "you" }])
-        socket.emit("message", { message, roomId })
+    const sendCode = useCallback((code: string) => {
+
+        console.log("Sending code")
+        socket.emit("code", { code, roomId })
+
     }, [roomId])
+
+
+
 
 
 
@@ -128,14 +131,6 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
         // answer , you will get answer, you have to set remote description , no trigger  
         socket.on("answer", answer)
-
-
-        // message
-        socket.on("message", (data: { message: string }) => {
-            console.log('calling handle message')
-            setMessage((prev) => [...prev, { message: data.message, sender: "remote" }])
-        }
-        )
 
 
         // you wil receive ice candidate of the remote  
@@ -164,19 +159,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             socket.off("offer", offer)
             socket.off("answer", answer)
             socket.off("candidate", candidate)
-            socket.off("message", (data: { message: string }) => {
-
-                console.log('calling handle message')
-                setMessage((prev) => [...prev, { message: data.message, sender: "remote" }])
-            }
-            )
 
             peerRef.current?.peer?.removeEventListener("negotiationneeded", async () => {
                 console.log(roomId)
                 console.log("In negociattion needed")
                 await join({ roomId, role: "caller" })
             })
-
 
             peerRef.current?.peer?.removeEventListener("icecandidate", async (e) => {
                 console.log(roomId)
@@ -200,7 +188,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     }, [])
 
-    return <SocketContext.Provider value={{ roomId, makeCall, peerRef, sendMessage, message }} >
+    return <SocketContext.Provider value={{ roomId, makeCall, peerRef }} >
         {children}
     </SocketContext.Provider>
 

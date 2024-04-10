@@ -58,20 +58,31 @@ export class SocketService {
 
 
 
-        socket.on("message", (data: { roomId: string, message: string }) => {
+        // socket.on("message", (data: { roomId: string, message: string }) => {
 
-            console.log('Receiving message')
-            console.log(data.roomId)
-            console.log(data.message)
+        //     console.log('Receiving message')
+        //     console.log(data.roomId)
+        //     console.log(data.message)
 
-            // message 
-            this.roomManager.sendMessage(data.roomId, data.message, socket)
+        //     // message 
+        //     this.roomManager.sendMessage(data.roomId, data.message, socket)
 
-        })
-
-
+        // })
 
 
+
+
+        // socket.on("code", (data: { roomId: string, code: string }) => {
+
+        //     console.log('Receiving code ')
+        //     console.log(data.roomId)
+        //     console.log(data.code)
+
+
+        //     // handle code send
+
+        //     this.roomManager.sendCode(data.roomId, data.code, socket)
+        // })
 
 
 

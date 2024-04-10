@@ -129,24 +129,43 @@ export class RoomManager {
     }
 
 
-    sendMessage(roomId: string, message: string, socket: Socket) {
 
-        console.log(roomId)
-        console.log(message)
-        console.log(socket.id)
+    // sendMessage(roomId: string, message: string, socket: Socket) {
+    //     console.log(roomId)
+    //     console.log(message)
+    //     console.log(socket.id)
 
-        const room = this.rooms.get(roomId)
+    //     const room = this.rooms.get(roomId)
 
-        if (!room) {
-            console.log('Invalid Room Id')
-            return
-        }
+    //     if (!room) {
+    //         console.log('Invalid Room Id')
+    //         return
+    //     }
 
-        const receiver = (room.first === socket) ? room.second : room.first
+    //     const receiver = (room.first === socket) ? room.second : room.first
 
-        receiver.emit("message", { message })
-        console.log("Sending Message to ", receiver.id)
+    //     receiver.emit("message-frontend", { message })
+    //     console.log("Sending Message to ", receiver.id)
 
-    }
+    // }
 
+
+    // sendCode(roomId: string, code: string, socket: Socket) {
+    //     console.log(roomId)
+    //     console.log(code)
+    //     console.log(socket.id)
+
+    //     const room = this.rooms.get(roomId)
+
+    //     if (!room) {
+    //         console.log('Invalid Room Id')
+    //         return
+    //     }
+
+    //     const receiver = (room.first === socket) ? room.second : room.first
+
+    //     receiver.emit("code-frontend", { code })
+    //     console.log("Sending code to ", receiver.id)
+
+    // }
 }
