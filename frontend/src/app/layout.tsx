@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { SocketProvider } from "@/components/Provider/SocketProvider";
 
+
+const poppins = Poppins({ weight: ["500"], subsets: ['latin'] })
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -17,7 +19,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning >
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <SocketProvider>
           {children}
         </SocketProvider>

@@ -3,10 +3,22 @@
 import { MutableRefObject, ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { socket } from '@/lib/socket'
 import { PeerService } from '@/lib/SocketService'
+import { setConfig } from 'next/config';
+
+type ConnectionState =
+    | "new"
+    | "connecting"
+    | "connected"
+    | "disconnected"
+    | "failed"
+    | "closed"
+    | null;
+
+
 
 
 // fucnation to call join , that will join use to the Room
-const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null> }>(null)
+const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null>, cancelCall: () => void, status: ConnectionState }>(null)
 
 
 export function useSocket() {
@@ -23,10 +35,13 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     const [roomId, setRoomId] = useState("")
     const peerRef = useRef<null | PeerService>(null)
+    const [status, setStatus] = useState<ConnectionState>(null)
 
 
     const makeCall = () => {
+
         console.log("Making call")
+        setStatus("new")
         socket.emit("join")
     }
 
@@ -54,6 +69,9 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
     }
+
+
+
 
 
     const offer = async (data: { roomId: string, sdp: RTCSessionDescriptionInit }) => {
@@ -92,6 +110,8 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     }
 
 
+
+
     const candidate = async (data: { roomId: string, candidate: RTCIceCandidate }) => {
 
         console.log("Received candidate")
@@ -107,15 +127,37 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
 
 
-    const sendCode = useCallback((code: string) => {
-
-        console.log("Sending code")
-        socket.emit("code", { code, roomId })
-
-    }, [roomId])
 
 
 
+    const cancelCall = () => {
+
+        if (!peerRef.current) return
+
+        peerRef.current.peer?.close()
+        peerRef.current = null
+
+        setStatus(null)
+        window.location.reload()
+
+
+    }
+
+
+
+    const handleStateChange = () => {
+        console.log("Now Connection State")
+
+        if (peerRef.current) {
+
+            console.log(peerRef.current?.peer?.connectionState)
+            setStatus(peerRef.current?.peer?.connectionState as ConnectionState)
+        }
+
+        else {
+            setStatus(null)
+        }
+    }
 
 
 
@@ -154,11 +196,21 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
         })
 
+
+
+        peerRef.current?.peer?.addEventListener("connectionstatechange", handleStateChange)
+
+
+
+
         return () => {
             socket.off("join", join)
             socket.off("offer", offer)
             socket.off("answer", answer)
             socket.off("candidate", candidate)
+
+
+            peerRef.current?.peer?.removeEventListener("connectionstatechange", handleStateChange)
 
             peerRef.current?.peer?.removeEventListener("negotiationneeded", async () => {
                 console.log(roomId)
@@ -180,15 +232,38 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     }, [roomId])
 
 
+
     useEffect(() => {
 
-        if (window) {
-            peerRef.current = new PeerService()
+
+        if (status === 'failed') {
+
+            window.location.reload()
         }
 
-    }, [])
 
-    return <SocketContext.Provider value={{ roomId, makeCall, peerRef }} >
+    }, [status])
+
+
+
+    useEffect(() => {
+
+        function createRTCPeer() {
+
+            if (window && peerRef.current === null) {
+                peerRef.current = new PeerService()
+            }
+
+        }
+
+        createRTCPeer()
+
+    }, [status])
+
+
+
+
+    return <SocketContext.Provider value={{ roomId, makeCall, peerRef, cancelCall, status }} >
         {children}
     </SocketContext.Provider>
 

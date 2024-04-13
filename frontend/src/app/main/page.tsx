@@ -1,5 +1,6 @@
 import { Features } from '@/components/Feature'
 import { Hero } from '@/components/Hero'
+import { Testimonials } from '@/components/Testimonials'
 import React from 'react'
 
 
@@ -9,6 +10,8 @@ const page = () => {
             <Hero />
 
             <Features />
+
+            <Testimonials />
 
         </div>
     )

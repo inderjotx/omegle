@@ -18,11 +18,28 @@ export class PeerService {
                                 "stun:global.stun.twilio.com:3478",
                             ],
                         },
-                    ]
+                    ],
                 }
             )
+
+            this.addSteamData()
         }
     }
+
+
+    async addSteamData() {
+
+        if (!this.peer) return
+
+        const media = await navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+
+        media.getTracks().forEach((track) => {
+            // @ts-ignore
+            this.peer.addTrack(track, media)
+        })
+
+    }
+
 
 
 
@@ -30,7 +47,11 @@ export class PeerService {
 
         if (!this.peer) throw new Error("No Peer Connection Set Up")
 
-        const offer = await this.peer.createOffer()
+
+        // first add steam the create offer other wise that will never call for ice server  
+
+
+        const offer = await this.peer.createOffer({ offerToReceiveAudio: true, offerToReceiveVideo: true })
         await this.peer.setLocalDescription(new RTCSessionDescription(offer))
         return offer
 
@@ -55,8 +76,14 @@ export class PeerService {
         if (!offer) throw new Error("No Offer sent")
 
 
+        // 
+        // this.addSteamData()
+
+
         // setting remote description
         await this.peer.setRemoteDescription(new RTCSessionDescription(offer))
+
+
 
         const answer = await this.peer.createAnswer()
 

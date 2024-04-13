@@ -41,7 +41,6 @@ export const Hero = () => {
 
             <div className='h-1/3  w-full relative z-20 '>
                 <Image src='/hero/hero.png' unoptimized alt='hero_imaege' height="40" width='80' className="w-4/5 mx-auto rounded-md -translate-y-6 md:-translate-y-10 lg:-translate-y-10 " />
-
             </div>
 
 
