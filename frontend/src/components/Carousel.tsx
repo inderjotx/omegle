@@ -38,12 +38,12 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
 
 
     return (
-        <section className="embla flex flex-col gap-4">
-            <div className="embla__viewport" ref={emblaRef}>
-                <div className="embla__container">
+        <section className="embla flex flex-col  gap-4 ">
+            <div className="embla__viewport " ref={emblaRef}>
+                <div className="embla__container ">
                     {slides.map((val, index) => (
-                        <div className="embla__slide flex justify-center" key={index}>
-                            <TestCard color='' comment={val} className='' />
+                        <div className="embla__slide  flex justify-center" key={index}>
+                            <TestCard color='' comment={val} className={val.className} />
                         </div>
                     ))}
                 </div>
@@ -52,9 +52,9 @@ const EmblaCarousel: React.FC<PropType> = (props) => {
                 <div className="mx-auto space-x-3">
                     {scrollSnaps.map((_, index) => (
                         <DotButton
+                            active={index === selectedIndex}
                             key={index}
                             onClick={() => onDotButtonClick(index)}
-                            className={cn(index === selectedIndex ? "text-purple-600" : "text-gray-400")}
                         />
                     ))}
                 </div>

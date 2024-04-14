@@ -18,7 +18,7 @@ type ConnectionState =
 
 
 // fucnation to call join , that will join use to the Room
-const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null>, cancelCall: () => void, status: ConnectionState }>(null)
+const SocketContext = createContext<null | { roomId: string, makeCall: () => void, peerRef: MutableRefObject<PeerService | null>, cancelCall: () => void, status: ConnectionState, remoteStream: null | MediaStream }>(null)
 
 
 export function useSocket() {
@@ -36,6 +36,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
     const [roomId, setRoomId] = useState("")
     const peerRef = useRef<null | PeerService>(null)
     const [status, setStatus] = useState<ConnectionState>(null)
+    const [remoteStream, setRemoteStream] = useState<null | MediaStream>(null)
 
 
     const makeCall = () => {
@@ -43,6 +44,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         console.log("Making call")
         setStatus("new")
         socket.emit("join")
+        createClient()
     }
 
 
@@ -50,6 +52,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
         console.log("Joined the Room")
         console.log(data.roomId)
+
         console.log(data.role)
 
 
@@ -135,9 +138,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         if (!peerRef.current) return
 
         peerRef.current.peer?.close()
-        peerRef.current = null
 
-        setStatus(null)
         window.location.reload()
 
 
@@ -159,6 +160,13 @@ export function SocketProvider({ children }: { children: ReactNode }) {
         }
     }
 
+
+    function createClient() {
+
+        if (window && !peerRef.current) {
+            peerRef.current = new PeerService()
+        }
+    }
 
 
     useEffect(() => {
@@ -185,6 +193,7 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             await join({ roomId, role: "caller" })
         })
 
+        peerRef.current?.peer?.addEventListener("connectionstatechange", handleStateChange)
 
         peerRef.current?.peer?.addEventListener("icecandidate", async (e) => {
 
@@ -196,9 +205,13 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
         })
 
+        peerRef.current?.peer?.addEventListener("track", (e) => {
+            console.log("Received Media stream from the remote")
+            setRemoteStream(e.streams[0])
+        })
 
 
-        peerRef.current?.peer?.addEventListener("connectionstatechange", handleStateChange)
+
 
 
 
@@ -227,6 +240,12 @@ export function SocketProvider({ children }: { children: ReactNode }) {
             })
 
 
+            peerRef.current?.peer?.removeEventListener("track", (e) => {
+                console.log("Received Media stream from the remote")
+                setRemoteStream(e.streams[0])
+            })
+
+
         }
 
     }, [roomId])
@@ -235,12 +254,10 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
 
-
         if (status === 'failed') {
 
             window.location.reload()
         }
-
 
     }, [status])
 
@@ -248,22 +265,14 @@ export function SocketProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
 
-        function createRTCPeer() {
+        createClient()
 
-            if (window && peerRef.current === null) {
-                peerRef.current = new PeerService()
-            }
-
-        }
-
-        createRTCPeer()
-
-    }, [status])
+    }, [])
 
 
 
 
-    return <SocketContext.Provider value={{ roomId, makeCall, peerRef, cancelCall, status }} >
+    return <SocketContext.Provider value={{ roomId, makeCall, peerRef, cancelCall, status, remoteStream }} >
         {children}
     </SocketContext.Provider>
 

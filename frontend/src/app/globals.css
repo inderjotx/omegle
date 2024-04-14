@@ -79,10 +79,10 @@
 
 .embla {
   max-width: 48rem;
-  margin: auto;
+  margin-top: auto;
   --slide-height: 19rem;
-  --slide-spacing: 1rem;
-  --slide-size: 100%;
+  --slide-spacing: 2rem;
+  --slide-size: 50%;
 }
 .embla__viewport {
   overflow: hidden;

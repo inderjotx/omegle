@@ -33,7 +33,7 @@ export const Hero = () => {
                 <div className='w-11/12 md:w-3/5 lg:2/5 flex flex-col gap-4 text-center items-center text-white'>
                     <h5 className='text-sm '>{config.hero.mainText.headingTop}</h5>
                     <h1 className={cn('text-6xl lg:text-7xl font-bold text-center', poppins.className)} >{config.hero.mainText.heading}</h1>
-                    <h6 className='text-sm font-thin' >{config.hero.mainText.headingBottom}</h6>
+                    <h6 className='text-sm font-light' >{config.hero.mainText.headingBottom}</h6>
 
                     <Button className='bg-orange-400' >{config.hero.mainText.button.text}</Button>
                 </div>

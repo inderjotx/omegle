@@ -35,7 +35,7 @@ const data = {
 }
 
 
-export const Features = (props: Props) => {
+export const FeaturesLarge = (props: Props) => {
 
     const FEATURES = data.features.length
 
@@ -47,7 +47,6 @@ export const Features = (props: Props) => {
     const [activeNum, setActiveNum] = useState<number>(0)
 
     const keys = data.features
-    process
     const { scrollYProgress } = useScroll({
         target: ref,
         offset: ["start start", "end end"]
@@ -68,8 +67,7 @@ export const Features = (props: Props) => {
     })
 
     return (
-        <motion.div ref={ref} className={`h-[400vh] mt-20  mb-60`} >
-
+        <motion.div ref={ref} className={`hidden lg:block h-[400vh] mt-20  mb-60`} >
 
             <div className='sticky flex flex-col gap-10 top-[90px] w-4/5 mx-auto h-[450px]  '>
 

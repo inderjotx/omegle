@@ -1,5 +1,7 @@
-import { Features } from '@/components/Feature'
+import { FeaturesLarge } from '@/components/FeatureLarge'
+import { Footer } from '@/components/Footer'
 import { Hero } from '@/components/Hero'
+import { SmallFeatures } from '@/components/SmallFeatures'
 import { Testimonials } from '@/components/Testimonials'
 import React from 'react'
 
@@ -9,9 +11,17 @@ const page = () => {
         <div className='min-h-screen' >
             <Hero />
 
-            <Features />
+            {/* only for large screens */}
+            <FeaturesLarge />
+
+            {/* small and medium screens */}
+            <SmallFeatures />
 
             <Testimonials />
+
+
+
+            <Footer />
 
         </div>
     )

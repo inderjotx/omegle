@@ -5,6 +5,8 @@ import React, {
     useState
 } from 'react'
 import { EmblaCarouselType } from 'embla-carousel'
+import { Circle } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 type UseDotButtonType = {
     selectedIndex: number
@@ -58,14 +60,16 @@ type PropType = PropsWithChildren<
         React.ButtonHTMLAttributes<HTMLButtonElement>,
         HTMLButtonElement
     >
->
+> & { active: boolean }
 
 export const DotButton: React.FC<PropType> = (props) => {
-    const { children, ...restProps } = props
+    const { active, className, children, ...restProps } = props
+
+    const fillColor = active ? '#808080' : '#fff'
 
     return (
         <button type="button" {...restProps}>
-            O
+            <Circle fill={fillColor} className={cn('size-3', className)} />
         </button>
     )
 }

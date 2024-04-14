@@ -2,9 +2,10 @@ import type { Metadata } from "next";
 import { Inter, Poppins } from "next/font/google";
 import "./globals.css";
 import { SocketProvider } from "@/components/Provider/SocketProvider";
+import { Toaster } from "sonner";
 
 
-const poppins = Poppins({ weight: ["500"], subsets: ['latin'] })
+const poppins = Poppins({ weight: ["500", "400", "300", "200", "100", "600", "800", "900"], subsets: ['latin'] })
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -21,6 +22,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning >
       <body className={poppins.className}>
         <SocketProvider>
+          <Toaster richColors />
           {children}
         </SocketProvider>
       </body>
