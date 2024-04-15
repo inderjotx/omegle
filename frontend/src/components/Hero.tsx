@@ -4,6 +4,7 @@ import React from 'react'
 import { MovingBlob } from './MovingBlob'
 import { Button } from './ui/button'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const poppins = Poppins({ weight: ["500"], subsets: ['latin'] })
 
@@ -35,7 +36,13 @@ export const Hero = () => {
                     <h1 className={cn('text-6xl lg:text-7xl font-bold text-center', poppins.className)} >{config.hero.mainText.heading}</h1>
                     <h6 className='text-sm font-light' >{config.hero.mainText.headingBottom}</h6>
 
-                    <Button className='bg-orange-400' >{config.hero.mainText.button.text}</Button>
+                    <Button asChild className='z-40 bg-orange-400 hover:bg-orange-500' >
+
+                        <Link href={'/room'} >
+                            {config.hero.mainText.button.text}
+                        </Link>
+
+                    </Button>
                 </div>
             </div>
 
